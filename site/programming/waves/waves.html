@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<title>Waves</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+        <div style='text-align:center'>
+            <button onclick='moveButton()' href='#'>Start</button><br>
+            <button onclick='stopButton()' href='#'>Stop</button><br>
+            
+        </div>
+        <form>
+            <table>
+                <tr>
+                    <td>Move Frequency(1-4000):</td>
+                    <td><input type="number", id="mFreq", name="mFreq", min="1", max="4000" value="20"></td>
+                </tr>
+                <tr>
+                    <td>Change Velocity Frequency(1-4000):</td>
+                    <td><input type="number", id="cFreq", name="cFreq", min="1", max="4000" value="20"></td>
+                </tr>
+                <tr>
+                    <td>Max Height(2-50):</td>
+                    <td><input type="number", id="maxHeight", name="maxHeight", min="2", max="50" value="10"></td>
+                </tr>
+                <tr>
+                    <td>Left Anchor</td>
+                    <td><input type="checkbox", id="leftAnchorOn", name="leftAnchorOn"></td>
+                </tr>
+                <tr>
+                    <td>Left Anchor(0-30):</td>
+                    <td><input type="number", id="leftAnchorValue", name="leftAnchorValue", min="0", max="30" value=""></td>
+                </tr>
+                <tr>
+                    <td>Right Anchor</td>
+                    <td><input type="checkbox", id="rightAnchorOn", name="rightAnchorOn"></td>
+                </tr>
+                <tr>
+                    <td>Right Anchor(0-30):</td>
+                    <td><input type="number", id="rightAnchorValue", name="rightAnchorValue", min="0", max="30" value=""></td>
+                </tr>
+                <tr>
+                    <td>Use Distance</td>
+                    <td><input type="checkbox", id="accelType", name="accelType"></td>
+                </tr>
+            </table>
+        </form>
+        <canvas id="myCanvas" width="700" height="700" style="border:10px solid #FFFFFF;">
+        </canvas>
+		<script>
+            
+            var c = document.getElementById("myCanvas");
+            var ctx = c.getContext("2d");
+            var tileSize=5;
+            
+            var cWidth=120;
+            var cHeight=155;
+
+            ctx.fillStyle = "#99ccff";
+            ctx.fillRect(0,0,cWidth,cHeight);
+            
+            var p0 = new Point(0, 4, 0);
+            var p1 = new Point(1, 8, 0);
+            var p2 = new Point(2, 5, 0);
+            var p3 = new Point(3, 3, 0);
+            var p4 = new Point(4, 2, 0);
+            var p5 = new Point(5, 5, 0);
+            var p6 = new Point(6, 5, 0);
+            var p7 = new Point(7, 3, 0);
+            var p8 = new Point(8, 3, 0);
+            var p9 = new Point(9, 5, 0);
+            var p10 = new Point(10, 2, 0);
+            var p11 = new Point(11, 5, 0);
+            var p12 = new Point(12, 4, 0);
+            var p13 = new Point(13, 1, 0);
+            var p14 = new Point(14, 4, 0);
+            var p15 = new Point(15, 2, 0);
+            var p16 = new Point(16, 5, 0);
+            var p17 = new Point(17, 4, 0);
+            var p18 = new Point(18, 1, 0);
+            var p19 = new Point(19, 4, 0);
+            var p20 = new Point(20, 2, 0);
+            var p21 = new Point(21, 5, 0);
+            var p22 = new Point(22, 4, 0);
+            var p23 = new Point(23, 1, 0);
+            var p24 = new Point(24, 4, 0);
+            
+            var points = [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24];
+                          
+            
+            
+			var moveFrequency = 4; 
+            var moveInterval = 0;
+			var checkFrequency = 50; 
+            var checkInterval = 0;
+            
+            var maxHeight=10;
+            var leftAnchorOn = 0;
+            var rightAnchorValue;
+            var leftAnchorOn = 0;
+            var rightAnchorValue;
+
+            // STARTS and Resets the loop if any
+            function moveButton() {
+                //get variables
+                checkFrequency=document.getElementById("cFreq").value;
+                moveFrequency=document.getElementById("mFreq").value;
+                maxHeight=document.getElementById("maxHeight").value;
+                leftAnchorOn=document.getElementById("leftAnchorOn").checked;
+                leftAnchorValue=document.getElementById("leftAnchorValue").value;
+                rightAnchorOn=document.getElementById("rightAnchorOn").checked;
+                rightAnchorValue=document.getElementById("rightAnchorValue").value;
+                
+                if(checkInterval > 0) clearInterval(checkInterval); 
+                checkInterval = setInterval( "changeV()", checkFrequency ); 
+                if(moveInterval > 0) clearInterval(moveInterval); 
+                moveInterval = setInterval( "runApp()", moveFrequency ); 
+            }
+            function stopButton() {
+                clearInterval(moveInterval);
+                clearInterval(moveInterval);
+                clearInterval(checkInterval);
+                clearInterval(checkInterval);
+            }
+            
+            function runApp(){
+                
+                ctx.fillStyle = "#99ccff";
+                ctx.fillRect(0,0,cWidth,cHeight);
+                for(var i = 0; i < points.length; i++){
+                    points[i].newPos();
+                    
+                    drawTile(points[i].pos, points[i].h);
+                }
+            }
+            function changeV(){
+                for(var i = 0; i < points.length; i++){
+                    points[i].newV();
+                }
+            }
+            
+            
+            
+            function drawTile(x, y){
+                var randHex='#'+(Math.random()*0xFFFFFF<<0).toString(16);
+                this.ctx.fillStyle = '#FFFFFF';
+                this.ctx.fillRect((x * this.tileSize), (y * this.tileSize),this.tileSize, this.tileSize);
+                this.ctx.fillRect((x * this.tileSize) , (y * this.tileSize) ,this.tileSize, this.tileSize);
+            }
+            
+            function Point(pos, h, v){
+                this.pos = pos;
+                this.h = h;
+                this.v = v;
+                
+                this.newV = function getNewV(){
+                    //get left
+                    var leftDiff = 0;
+                    var rightDiff = 0;
+                    var addLR = 0;
+                    if(this.pos != 0){
+                        leftDiff = this.h - points[this.pos-1].h;
+                    }
+                    else if(leftAnchorOn && leftAnchorValue != ""){
+                        leftDiff = this.h - leftAnchorValue;
+                    }
+                    if(this.pos != points.length - 1){
+                        rightDiff = this.h - points[this.pos+1].h;
+                    }
+                    else if(rightAnchorOn && rightAnchorValue != ""){
+                        rightDiff = this.h - rightAnchorValue;
+                    }
+                    
+                    addLR = (leftDiff + rightDiff)/100; 
+                    if(addLR > 0){
+                        var newV = this.v + 0.01
+                    }
+                    else{
+                        var newV = this.v - 0.01
+                    }
+                    var newV = this.v + addLR;
+                    this.v = parseFloat(newV.toFixed(2));
+                } 
+                this.newPos = function getNewPos(){
+                    var newH = this.h - this.v;
+                    this.h = parseFloat(newH.toFixed(2));  
+                    
+                    if(this.h <= 0){
+                        this.h = 0;
+                    }
+                    if(this.h >= maxHeight){
+                        this.h = maxHeight;
+                    }
+                }
+            }   
+                          
+        </script>
+    </body>
+</html>

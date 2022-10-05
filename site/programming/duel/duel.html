@@ -1,0 +1,162 @@
+<html>
+    <title>Duel!</title>
+    Move 1: 
+    <select id="1" name="1" onchange="change1()">
+        <option value="0">Select</option>
+        <option value="strike">Strike</option>
+        <option value="block">Block</option>
+        <option value="nothing">Nothing</option>
+    </select>
+    <br><br>
+    Move 2: 
+    <select id="2" name="2" onchange="change2()">
+        <option value="0">Select</option>
+        <option value="strike">Strike</option>
+        <option value="block">Block</option>
+        <option value="nothing">Nothing</option>
+    </select>
+    <br><br>
+    Move 3: 
+    <select id="3" name="3" onchange="change3()">
+        <option value="0">Select</option>
+        <option value="strike">Strike</option>
+        <option value="block">Block</option>
+        <option value="nothing">Nothing</option>
+    </select>
+    <br><br>
+    <button onclick="start()">Start</button>
+    <br><br>
+    <div id="log"></div>
+    <div id="score"></div>
+
+    <script>
+        function change1(){
+            dd1 = document.getElementById("1");
+            dd2 = document.getElementById("2");
+            dd3 = document.getElementById("3");
+
+            if(dd1.value == dd2.value){
+                dd2.value = 0;
+            }
+            if(dd1.value == dd3.value){
+                dd3.value = 0;
+            }
+        }
+        function change2(){
+            dd1 = document.getElementById("1");
+            dd2 = document.getElementById("2");
+            dd3 = document.getElementById("3");
+
+            if(dd2.value == dd1.value){
+                dd1.value = 0;
+            }
+            if(dd2.value == dd3.value){
+                dd3.value = 0;
+            }
+        }
+        function change3(){
+            dd1 = document.getElementById("1");
+            dd2 = document.getElementById("2");
+            dd3 = document.getElementById("3");
+
+            if(dd3.value == dd1.value){
+                dd1.value = 0;
+            }
+            if(dd3.value == dd2.value){
+                dd2.value = 0;
+            }
+        }
+        function start(){
+            let dd1 = document.getElementById("1");
+            let dd2 = document.getElementById("2");
+            let dd3 = document.getElementById("3");
+
+            let log = document.getElementById("log");
+            let score = document.getElementById("score");
+            log.innerHTML = "";
+            score.innerHTML = "";
+
+            if(dd1.value == 0 || dd2.value == 0 || dd3.value == 0){
+                log.innerHTML = "Fill out all fields";
+                return;
+            }
+
+            let pPoints = 0;
+            let oPoints = 0;
+
+            let oppMoves = ["strike", "block", "nothing"];
+            let playerMoves = [dd1.value, dd2.value, dd3.value];
+            let currentIndex = oppMoves.length,  randomIndex;
+
+            while (currentIndex != 0) {
+
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+
+                [oppMoves[currentIndex], oppMoves[randomIndex]] = [
+                oppMoves[randomIndex], oppMoves[currentIndex]];
+            }
+            for (let i = 0; i < oppMoves.length; i++){
+                if (playerMoves[i] == "strike"){
+                    log.innerHTML = log.innerHTML + "You strike. ";
+                    if(oppMoves[i] == "strike"){
+                        log.innerHTML = log.innerHTML + "They strike. You each do 2 damage<br>";
+                        pPoints = pPoints + 2;
+                        oPoints = oPoints + 2;
+                    }
+                    else if(oppMoves[i] == "block"){
+                        log.innerHTML = log.innerHTML + "They block. They do 3 damage<br>";
+                        oPoints = oPoints + 3;
+                    }
+                    else if(oppMoves[i] == "nothing"){
+                        log.innerHTML = log.innerHTML + "They do nothing. You do 5 damage<br>";
+                        pPoints = pPoints + 5;
+                    }
+
+                }
+                if (playerMoves[i] == "block"){
+                    log.innerHTML = log.innerHTML + "You block. ";
+                    if(oppMoves[i] == "strike"){
+                        log.innerHTML = log.innerHTML + "They strike. You do 3 damage<br>";
+                        pPoints = pPoints + 3;
+                    }
+                    else if(oppMoves[i] == "block"){
+                        log.innerHTML = log.innerHTML + "They block. <br>";
+                    }
+                    else if(oppMoves[i] == "nothing"){
+                        log.innerHTML = log.innerHTML + "They do nothing.<br>";
+                    }
+
+                }
+                if (playerMoves[i] == "nothing"){
+                    log.innerHTML = log.innerHTML + "You do nothing. ";
+                    if(oppMoves[i] == "strike"){
+                        log.innerHTML = log.innerHTML + "They strike. They do 5 damage<br>";
+                        oPoints = oPoints + 5;
+                    }
+                    else if(oppMoves[i] == "block"){
+                        log.innerHTML = log.innerHTML + "They block. <br>";
+                    }
+                    else if(oppMoves[i] == "nothing"){
+                        log.innerHTML = log.innerHTML + "They do nothing.<br>";
+                    }
+
+                }
+            }
+
+            score.innerHTML = "<br><u>Damage Done</u><br>You: " + pPoints + " Opponent: " + oPoints;
+            if (pPoints > oPoints){
+                score.innerHTML = score.innerHTML + "<br><br>You Win!";
+            }
+            else if (oPoints > pPoints){
+                score.innerHTML = score.innerHTML + "<br><br>You Lose!";
+            }
+            else{
+                score.innerHTML = score.innerHTML + "<br><br>Draw.";
+            }
+
+
+        }
+    </script>
+
+</html>

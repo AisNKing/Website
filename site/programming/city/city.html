@@ -1,0 +1,120 @@
+<html>
+    <head>
+        <title>City</title>
+        <style>
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            width: 40%;
+        }
+        </style>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <td>
+                    <a class="button" style="background-color:#000044;" href="city.html?t=0">Night</a><br />
+                    <a class="button" style="background-color:#feb333;" href="city.html?t=2">Morning</a><br />
+                    <a class="button" style="background-color:#99ccff;" href="city.html?t=1">Day</a><br />
+                </td>
+                <td>
+                    <canvas id="myCanvas" width="1600" height="400" style="border:1px solid #000000;">
+                </td>
+            </tr>
+        </table>
+        </canvas>
+        <br />
+    </body>
+</html>
+<script>
+    var getUrlParameter = function getUrlParameter(sParam) {
+        var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+            sURLVariables = sPageURL.split('&'),
+            sParameterName,
+            i;
+
+        for (i = 0; i < sURLVariables.length; i++) {
+            sParameterName = sURLVariables[i].split('=');
+
+            if (sParameterName[0] === sParam) {
+                return sParameterName[1] === undefined ? true : sParameterName[1];
+            }
+        }
+    };
+    
+    var t=getUrlParameter('t');
+    var minWidth = document.getElementById("myRange");
+    var c = document.getElementById("myCanvas");
+    var ctx = c.getContext("2d");
+    var cWidth=1600;
+    var cHeight=400;
+    if(t==0){
+        ctx.fillStyle = "#112266";
+    }
+    else if(t==1){
+        ctx.fillStyle = "#99ccff";
+    }
+    else{
+        var sunrise=ctx.createLinearGradient(-100,0,600,0);
+        sunrise.addColorStop(0,"#feb333");
+        sunrise.addColorStop(1,"#112266");
+        ctx.fillStyle=sunrise;
+    }
+    ctx.fillRect(0,0,cWidth,cHeight);
+    
+    var i=-250;
+    while(i < cWidth){
+        var h=Math.floor((Math.random()*200))+20;
+        i=Math.floor((Math.random()*60))+150+i;
+        drawBuilding(i, h);
+    }
+    
+    function drawBuilding(x1, y1){
+        if(y1 > cHeight-(cHeight/5)){
+            return y1;
+        }
+        //values to change to get p2 and p3
+        var x2r=Math.floor((Math.random()*60))+20;
+        var y2r=Math.floor((Math.random()*90))+30;
+        var x3r=Math.floor((Math.random()*60))+20;
+        var y3r=Math.floor((Math.random()*90))+30;
+        //pick which point is positive x and which one is negative
+        var rand=Math.floor((Math.random()*10))%2;
+        if(rand>0){
+            x2r=x2r*-1;   
+        }
+        else{
+            x3r=x3r*-1;
+        }
+        //Pick p2
+        var x2=x1+x2r;
+        var y2=y1+y2r;
+        //Pick p3
+        var x3=x1+x3r;
+        var y3=y1+y3r;
+        console.log("p1("+x1+","+y1+")p2("+x2+","+y2+")p3("+x3+","+y3+")");
+        //draw rectangle
+        var randHex='#'+(Math.random()*0xFFFFFF<<0).toString(16);
+        if(t==1){
+            ctx.fillStyle = randHex;
+        }
+        else{
+            ctx.fillStyle = 'black';
+        }
+        ctx.strokeRect(x2,y1,x3-x2,cHeight);
+        ctx.fillRect(x2,y1,x3-x2,cHeight);
+        
+        //call next drawing
+        drawBuilding(x2, y2);
+        drawBuilding(x3, y3);
+        return y1;
+    }
+</script>

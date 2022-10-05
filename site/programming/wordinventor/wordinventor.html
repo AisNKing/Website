@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <title>Word Inventor</title>
+    </head>
+
+    <body>
+        <div id="everything" class="everything">
+            Number of words: <input type="number" name="amount" id="amount" value="1"/>
+            <br /><br />
+            <button name="generateWord" id="generateWord" onclick="generateWordButton()">Invent Word</button>
+            <br /><br />
+
+            <div id="output" class="output"></div>
+        </div>
+
+    </body>
+
+<script>
+    var glossary = [];
+
+    function generateWordButton(){
+        var output = document.getElementById("output");
+        var amount = document.getElementById("amount").value;
+        output.innerHTML = "";
+        for(i = 0; i < amount; i++){
+            output.innerHTML = output.innerHTML + generateWord(amount) + "<br />";
+        }
+    }
+
+
+    function generateWord(amount){
+
+        var vowels = Array("a", "e", "i", "o", "u");
+        var consonants = Array("b", "c", "d", "f", "g", "h", "j", "k", "l", "m", "n", "p", "r", "s", "t", "v", "w", "x", "y", "z");
+        var diagraphs = Array("sc", "ng", "ch", "ck", "gh", "ph", "rh", "sh", "ti", "th", "wh", "zh", "zi", "wr", "qu");
+
+        var wordLength = randomNumber(1, 9);
+
+        let word="";
+
+        for(var i = 0; i < wordLength; i++){
+
+            var choose = randomNumber(1, 6);
+            var letter = "";
+
+            if(choose <= 2){
+                letter = vowels[randomNumber(0, vowels.length)];
+            }
+            else if(choose <= 4){
+                letter = consonants[randomNumber(0, consonants.length)];
+            }
+            
+            else{
+                letter = diagraphs[randomNumber(0, diagraphs.length)];
+            }
+            
+            
+            word = word.concat(letter);
+        }
+        
+        word = word.charAt(0).toUpperCase() + word.substring(1);
+
+        glossary.push(word);
+        return word;
+    }
+
+
+    function randomNumber(min, max){
+        var number = Math.floor(Math.random() * (max - min)) + min;
+        return number;
+    }
+
+</script>
+
+<style>
+    .output{
+        width:30%;
+        text-align: justify;
+        text-justify: inter-word;
+    }
+</style>
+</html>
